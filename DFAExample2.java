@@ -1,6 +1,7 @@
 package MyDFA;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class DFAExample2{
 
@@ -8,7 +9,7 @@ public class DFAExample2{
    public static void main(String[] args){
       Scanner input = new Scanner(System.in);
       
-      DFA mDFA = new DFA();
+      DFA mDFA = new DFA();      // construct DFA
       mDFA.addAcceptState("Q1");
       mDFA.addAcceptState("Q3");
       mDFA.addTransition('0', "Q0", "Q1");
@@ -22,20 +23,32 @@ public class DFAExample2{
       mDFA.addTransition('0', "Q4", "Q4");
       mDFA.addTransition('1', "Q4", "Q4");
       
-      char stop = 'a';
-      while(stop != 'x'){
-         System.out.println("Enter a string of 0's and 1's.");
-         String userString = input.next();
-      
-         mDFA.solve(userString);
+      String userString;
+      boolean restart = true;
+      while(restart){      // program restart loop
+         System.out.println("Enter a string of 0's and 1's: ");
          
-         System.out.println("\nTo try another string, enter any key.  Enter x to quit.\n");
-         String quitString = input.next();
-         char quitChar = quitString.charAt(0);
-         if(quitChar == 'x'){
-            stop = 'x';
-            System.out.println("Program has terminated.");
+         boolean validString = false;
+         while(!validString){    // verify valid string loop
+            userString = input.next();
+            if(Pattern.matches("[01]*", userString)){  // verify user string has only 0's and 1's
+               validString = true;
+               mDFA.solve(userString);    // solve the DFA
+            }
+            else{
+               input.nextLine();    // clear input
+               System.out.println("Re-enter a string of 0's and 1's: ");
+            }
+         }    
+         
+         System.out.println("To restart, press any key.  To exit, enter 0.");
+         String restartString = input.next();
+         if(restartString.charAt(0) == '0'){
+            restart = false;
+            System.out.println("Program has terminated. ");
          }
+         else
+            input.nextLine();
       }
    }
 }
